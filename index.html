@@ -136,13 +136,33 @@
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
+    const card = document.getElementById('card').value;
     const certID = 'NG-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
     const now = new Date().toLocaleDateString('ja-JP');
+
+    // 証明書表示
     document.getElementById('certName').textContent = name;
     document.getElementById('certID').textContent = certID;
     document.getElementById('certDate').textContent = now;
     document.getElementById('certificate').classList.remove('d-none');
-    alert('国籍登録が完了しました！');
+
+    // Google Apps Script 経由でスプレッドシート送信
+    fetch('https://script.google.com/macros/s/AKfycbx2A_5n9wOaWPrZgQ_gVYtuDYzh6HH8jowCu5JDyt_-GpC8RUz_6cDGu6xNyCFw5bnH/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        card: card,
+        citizenId: certID,
+        date: now
+      })
+    });
+
+    alert('国籍登録が完了し、Googleスプレッドシートに記録されました！');
   });
 </script>
 </body>
